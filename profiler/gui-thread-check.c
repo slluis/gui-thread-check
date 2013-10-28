@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <string.h>
 #include <mono/metadata/profiler.h>
+#include <stdio.h>
 
 
 extern pthread_t pthread_self ();
@@ -63,6 +64,7 @@ simple_method_enter (MonoProfiler *prof, MonoMethod *method)
 			guithread_set = TRUE;
 			guithread = current_thread_id;
 			printf ("*** GUI THREAD INITIALIZED: %u\n", guithread); 
+			fflush (NULL);
 			return;
 		}
 		if (!guithread_set) {
@@ -77,6 +79,7 @@ simple_method_enter (MonoProfiler *prof, MonoMethod *method)
 		) {
 			printf ("*** GTK CALL NOT IN GUI THREAD: %s.%s\n", klass_name, method_name);
 	        mono_stack_walk_no_il (stack_walk_fn, NULL);
+			fflush (NULL);
 		}
 	}
 }
