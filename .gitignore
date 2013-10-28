@@ -1,0 +1,21 @@
+#autotools stuff:
+Makefile
+Makefile.in
+autom4te.cache
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+
+#compilation:
+profiler/.deps
+profiler/.libs
+profiler/*.lo
+profiler/*.o
+profiler/*.la
