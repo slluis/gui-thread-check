@@ -43,8 +43,17 @@ stack_walk_fn (MonoMethod *method, gint32 native_offset, gint32 il_offset, gbool
     return FALSE;
 }
 
+static MonoProfilerCallInstrumentationFlags
+method_filter (MonoProfiler *prof, MonoMethod *method)
+{
+	return MONO_PROFILER_CALL_INSTRUMENTATION_ENTER |
+	       MONO_PROFILER_CALL_INSTRUMENTATION_LEAVE |
+	       MONO_PROFILER_CALL_INSTRUMENTATION_TAIL_CALL |
+	       MONO_PROFILER_CALL_INSTRUMENTATION_EXCEPTION_LEAVE;
+}
+
 static void
-simple_method_enter (MonoProfiler *prof, MonoMethod *method)
+simple_method_enter (MonoProfiler *prof, MonoMethod *method, MonoProfilerCallContext *ctx)
 {
 	static int guithread;
 	static gboolean guithread_set = FALSE;
@@ -63,7 +72,7 @@ simple_method_enter (MonoProfiler *prof, MonoMethod *method)
 		if (!guithread_set && strcmp (klass_name, "Application")==0 && strcmp (method_name, "Init")==0) {
 			guithread_set = TRUE;
 			guithread = current_thread_id;
-			printf ("*** GUI THREAD INITIALIZED: %u\n", guithread); 
+			g_printf ("*** GUI THREAD INITIALIZED: %u\n", guithread); 
 			fflush (NULL);
 			return;
 		}
@@ -79,7 +88,7 @@ simple_method_enter (MonoProfiler *prof, MonoMethod *method)
 			!(strcmp (method_name, "remove_InternalDestroyed")==0) &&
 			!(strcmp (method_name, "remove_Destroyed")==0)
 		) {
-			printf ("*** GTK CALL NOT IN GUI THREAD: %s.%s\n", klass_name, method_name);
+			g_printf ("*** GTK CALL NOT IN GUI THREAD: %s.%s\n", klass_name, method_name);
 	        mono_stack_walk_no_il (stack_walk_fn, NULL);
 			fflush (NULL);
 		}
@@ -87,12 +96,13 @@ simple_method_enter (MonoProfiler *prof, MonoMethod *method)
 }
 
 void
-mono_profiler_startup (const char *desc)
+mono_profiler_init_guithreadcheck (const char *desc)
 {
 	g_print ("*** Running with gui-thread-check ***\n");
-	
-	mono_profiler_install (NULL, NULL);
-	mono_profiler_install_enter_leave (simple_method_enter, NULL);
-	mono_profiler_set_events (MONO_PROFILE_ENTER_LEAVE);
+
+	MonoProfilerHandle handle = mono_profiler_create (NULL);
+
+	mono_profiler_set_call_instrumentation_filter_callback (handle, method_filter);
+	mono_profiler_set_method_enter_callback (handle, simple_method_enter);
 }
 

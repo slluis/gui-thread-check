@@ -13,7 +13,7 @@
     <OutputPath>.</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="gui-thread-check.c" />
+    <Compile Include="guithreadcheck.c" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

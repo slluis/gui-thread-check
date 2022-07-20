@@ -6,9 +6,9 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
-PROJECT=gui-thread-check
+PROJECT=guithreadcheck
 TEST_TYPE=-f
-FILE=profiler/gui-thread-check.c
+FILE=profiler/guithreadcheck.c
 
 DIE=0
 

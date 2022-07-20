@@ -1,9 +1,9 @@
 
-lib_LTLIBRARIES = libmono-profiler-gui-thread-check.la
+lib_LTLIBRARIES = libmono-profiler-guithreadcheck.la
 
-libmono_profiler_gui_thread_check_la_SOURCES = gui-thread-check.c
+libmono_profiler_guithreadcheck_la_SOURCES = guithreadcheck.c
 
-libmono_profiler_gui_thread_check_la_LIBADD = @PROFILER_LIBS@
+libmono_profiler_guithreadcheck_la_LIBADD = @PROFILER_LIBS@
 
 INCLUDES = @PROFILER_CFLAGS@ -Wall
 
